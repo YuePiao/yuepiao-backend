@@ -25,12 +25,7 @@ public class MomentService {
     private List<MomentView> getViewList(long userId)
     {
         return watchDao.findById_UserId(userId).stream()
-                .map(u -> new MomentView(u.getId(),
-                        u.getRound().getMovie().getName(),
-                        u.getRound().getCinema().getName(),
-                        u.getRound().getPrice(),
-                        u.getRound().getPlace(),
-                        u.getRound().getBeginTime()))
+                .map(MomentView::new)
                 .sorted((o1, o2) -> o1.getBeginTime().compareTo(o2.getBeginTime()))
                 .collect(Collectors.toList());
     }

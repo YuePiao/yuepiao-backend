@@ -1,6 +1,7 @@
 package edu.sysu.yuepiao.view;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import edu.sysu.yuepiao.model.Movie;
 
 /**
  * Created by moret on 2017/6/6.
@@ -12,6 +13,16 @@ public class MovieView {
     private String uri;
     private long rating;
     private String type;
+
+    public MovieView(Movie m)
+    {
+        this.id = m.getId();
+        this.name = m.getName();
+        this.uri = m.getUri();
+        this.rating = m.getRating();
+        this.type = m.getType();
+    }
+
     public MovieView(long id, String name, String uri, long rating, String type)
     {
         this.id = id;

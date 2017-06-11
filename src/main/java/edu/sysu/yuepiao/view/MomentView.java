@@ -16,6 +16,16 @@ public class MomentView {
     private String place;
     private Date beginTime;
 
+    public MomentView(Watch w)
+    {
+        this.id = w.getId();
+        this.movie = w.getRound().getMovie().getName();
+        this.cinema = w.getRound().getCinema().getName();
+        this.price = w.getRound().getPrice();
+        this.place = w.getRound().getPlace();
+        this.beginTime = w.getRound().getBeginTime();
+    }
+
     public MomentView(WatchId id, String movie, String cinema, long price, String place, Date beginTime) {
         this.id = id;
         this.movie = movie;

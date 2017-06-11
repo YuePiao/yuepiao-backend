@@ -22,7 +22,7 @@ public class MoviesService {
     public Collection<MovieView> getMovies()
     {
         return movieDao.findAll().stream()
-                .map(m -> new MovieView(m.getId(), m.getName(), m.getUri(), m.getRating(), m.getType()))
+                .map(MovieView::new)
                 .collect(Collectors.toList());
     }
 
