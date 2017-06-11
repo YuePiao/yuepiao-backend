@@ -59,7 +59,7 @@ public class UserService {
         return String.valueOf(user.getId());
     }
 
-    @RequestMapping(value = "/api/login/", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/login", method = RequestMethod.POST)
     public LoginView logIn(@RequestBody AccountView input) {
         User user = null;
         user = userDao.findByUsername(input.getUsername());
