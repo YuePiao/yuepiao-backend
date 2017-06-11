@@ -3,13 +3,18 @@ package edu.sysu.yuepiao.controller;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import edu.sysu.yuepiao.dao.UserDao;
 import edu.sysu.yuepiao.model.User;
+import edu.sysu.yuepiao.view.AccountView;
+import edu.sysu.yuepiao.view.LoginView;
 import edu.sysu.yuepiao.view.UserView;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.Console;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -54,23 +59,26 @@ public class UserService {
         return String.valueOf(user.getId());
     }
 
-    @RequestMapping(value = "/login/{username}", method = RequestMethod.POST)
-    public String logIn(@PathVariable String username, String password)
-    {
+    @RequestMapping(value = "/api/login/", method = RequestMethod.POST)
+    public LoginView logIn(@RequestBody AccountView input) {
         User user = null;
-        try
+        user = userDao.findByUsername(input.getUsername());
+        if (!user.getPassword().equals(input.getPassword()))
         {
-            user = userDao.findByUsername(username);
+            return new LoginView();
         }
-        catch (Exception ex)
-        {
-            return "Error creating the user: " + ex.toString();
+
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+            String digest = Base64.encodeBase64String(md.digest((String.valueOf(user.getId()) + String.valueOf(System.currentTimeMillis())).getBytes()));
+            user.setDigest(digest);
+            userDao.save(user);
+            return new LoginView(new UserView(user), digest);
+        } catch (NoSuchAlgorithmException ex) {
+
         }
-        if (user.getPassword().equals(password))
-        {
-            return "";
-        }
-        return "";
+        return new LoginView();
     }
 
     @Autowired

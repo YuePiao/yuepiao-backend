@@ -32,6 +32,29 @@ public class User {
 
     private String avatar;
 
+    private String digest;
+
+    public User() {}
+
+    public User(String username, String password, long reportedCount, String avatar, String digest, Set<User> followers, Set<User> following) {
+        this.username = username;
+        this.password = password;
+        this.reportedCount = reportedCount;
+        this.avatar = avatar;
+        this.digest = digest;
+        this.followers = followers;
+        this.following = following;
+    }
+
+    public String getDigest() {
+
+        return digest;
+    }
+
+    public void setDigest(String digest) {
+        this.digest = digest;
+    }
+
     public String getAvatar() {
         return avatar;
     }

@@ -35,6 +35,28 @@ public class Round {
     @NotNull
     private String version;
 
+    @NotNull
+    private long rows;
+
+    @NotNull
+    private long columns;
+
+    public long getRows() {
+        return rows;
+    }
+
+    public void setRows(long rows) {
+        this.rows = rows;
+    }
+
+    public long getColumns() {
+        return columns;
+    }
+
+    public void setColumns(long columns) {
+        this.columns = columns;
+    }
+
     public String getVersion() {
         return version;
     }

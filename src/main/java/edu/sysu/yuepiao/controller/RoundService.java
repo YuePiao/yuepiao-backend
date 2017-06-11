@@ -25,17 +25,16 @@ import java.util.stream.Collectors;
  */
 @RestController
 public class RoundService {
+
     @RequestMapping(value = "/api/movies/{movieId}/cinemas/{cinemaId}/rounds", method = RequestMethod.GET)
-    public Collection<RoundView> getRounds(@PathVariable Long movieId, @PathVariable Long cinemaId)
-    {
+    public Collection<RoundView> getRounds(@PathVariable Long movieId, @PathVariable Long cinemaId) {
         return roundDao.findByMovie_IdAndCinema_Id(movieId, cinemaId).stream()
-                .map(r -> new RoundView(r.getId(), r.getPrice(), r.getPlace(), r.getVersion(), r.getBeginTime()))
+                .map(RoundView::new)
                 .collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/api/rounds/{roundId}", method = RequestMethod.GET)
-    public Collection<SeatView> getRoundDetail(@PathVariable Long roundId)
-    {
+    public Collection<SeatView> getRoundDetail(@PathVariable Long roundId) {
         return watchDao.findById_RoundId(roundId).stream()
                 .map(w -> new SeatView(w.getId(), w.getUser().getReportedCount()))
                 .collect(Collectors.toList());
@@ -43,8 +42,7 @@ public class RoundService {
 
     @RequestMapping(value = "/api/rounds/{roundId}/report", method = RequestMethod.POST)
     @Transactional
-    public void postReport(@PathVariable Long roundId, @RequestBody ReportDetail[] reportDetails)
-    {
+    public void postReport(@PathVariable Long roundId, @RequestBody ReportDetail[] reportDetails) {
         Arrays.stream(reportDetails).map(r ->
             watchDao.findById_RoundIdAndId_SeatXAndId_SeatY(roundId, r.getSeatX(), r.getSeatY()).stream().map(w ->
                 w.getUser().getId()
@@ -54,6 +52,12 @@ public class RoundService {
             user.incReportedCount();
             userDao.save(user);
         });
+    }
+
+    @RequestMapping(value = "/api/rounds/{roundId}/meta", method = RequestMethod.GET)
+    public RoundView getRoundMeta(@PathVariable Long roundId)
+    {
+        return new RoundView(roundDao.getOne(roundId));
     }
 
     @Autowired
