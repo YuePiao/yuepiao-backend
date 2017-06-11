@@ -6,13 +6,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * Created by moret on 2017/6/11.
  */
 @JsonDeserialize
-public class AccountView {
+public class AccountPost {
     private String username;
     private String password;
 
-    public AccountView() {}
+    public AccountPost() {}
 
-    public AccountView(String username, String password) {
+    public AccountPost(String username, String password) {
         this.username = username;
         this.password = password;
     }

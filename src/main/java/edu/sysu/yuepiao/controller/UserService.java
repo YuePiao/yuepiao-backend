@@ -1,18 +1,15 @@
 package edu.sysu.yuepiao.controller;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import edu.sysu.yuepiao.dao.UserDao;
 import edu.sysu.yuepiao.model.User;
-import edu.sysu.yuepiao.view.AccountView;
+import edu.sysu.yuepiao.view.AccountPost;
+import edu.sysu.yuepiao.view.FollowerPost;
 import edu.sysu.yuepiao.view.LoginView;
 import edu.sysu.yuepiao.view.UserView;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.Console;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
@@ -29,6 +26,24 @@ public class UserService {
     {
         return userDao.findOne(userId).getFollowers().stream().map(User::getId).collect(Collectors.toList());
     }
+
+    @RequestMapping(value = "/api/users/{fromId}/following/{toId}", method = RequestMethod.DELETE)
+    public void deleteFollowing(@PathVariable long fromId, @PathVariable long toId)
+    {
+        User user = userDao.findOne(fromId);
+        user.getFollowing().removeIf(o -> o.getId() == toId);
+        userDao.save(user);
+    }
+
+    @RequestMapping(value = "/api/users/{fromId}/following/{toId}", method = RequestMethod.POST)
+    public void postFollowing(@PathVariable long fromId, @PathVariable long toId)
+    {
+        User user = userDao.findOne(fromId);
+        user.getFollowing().add(userDao.findOne(toId));
+        userDao.save(user);
+    }
+
+
 
     @RequestMapping(value = "/api/users/{userId}/following", method = RequestMethod.GET)
     public Collection<Long> getFollowing(@PathVariable long userId)
@@ -60,7 +75,7 @@ public class UserService {
     }
 
     @RequestMapping(value = "/api/login", method = RequestMethod.POST)
-    public LoginView logIn(@RequestBody AccountView input) {
+    public LoginView logIn(@RequestBody AccountPost input) {
         User user = null;
         user = userDao.findByUsername(input.getUsername());
         if (!user.getPassword().equals(input.getPassword()))
